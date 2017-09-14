@@ -1,0 +1,31 @@
+repositories {
+	mavenCentral()
+}
+
+apply plugin: "application"
+
+dependencies {
+	compile "com.microsoft.azure:azure:1.2.1"
+}
+
+mainClassName = "com.liferay.azure.AzureMain"
+
+def props = new Properties()
+
+File buildPropertiesFile = file("build.properties")
+File buildExtPropertiesFile = file("build-ext.properties")
+
+buildPropertiesFile.withInputStream { props.load(it) }
+
+if (buildExtPropertiesFile.exists()) {
+	buildExtPropertiesFile.withInputStream { props.load(it) }
+}
+
+run {
+	args = [
+		props.getProperty("azure.client.id"),
+		props.getProperty("azure.domain"),
+		props.getProperty("azure.password"),
+		props.getProperty("azure.username")
+	]
+}
